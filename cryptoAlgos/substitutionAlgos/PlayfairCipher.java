@@ -1,4 +1,4 @@
-package Lab7thSem;
+package cryptoAlgos.substitutionAlgos;
 
 import java.io.BufferedReader;
 import java.io.IOException;

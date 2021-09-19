@@ -1,4 +1,4 @@
-package Lab7thSem.HillCipherEg;
+package cryptoAlgos.substitutionAlgos.HillCipher;
 
 import java.util.ArrayList;
 import java.util.Iterator;

@@ -1,4 +1,4 @@
-package Lab7thSem.Ex2;
+package cryptoAlgos.transpositionAlgos;
 
 import java.util.Scanner;
 

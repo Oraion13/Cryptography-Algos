@@ -1,4 +1,4 @@
-package Lab7thSem.Ex3;
+package cryptoAlgos.dataEncryptionStandard;
 
 import java.math.BigInteger;
 
