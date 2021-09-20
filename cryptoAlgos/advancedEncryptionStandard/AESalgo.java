@@ -87,7 +87,7 @@ public class AESalgo {
     };
 
     // Mix columns operation
-    private static String[][] matrixMul(String[][] MSG, int[][] FIXED) {
+    private static String[][] matrixMul(String[][] MSG, int[][] FIXED) { 
         int[][] storage = new int[MSG.length][MSG[0].length];
 
         for (int i = 0; i < storage.length; i++) {
