@@ -1,6 +1,9 @@
 package cryptoAlgos.substitutionAlgos.HillCipher;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+
+import javax.naming.InterruptedNamingException;
 
 public class sample {
     // private static int SBOX[][][] = {
@@ -126,11 +129,35 @@ public class sample {
         // for (int i : ar) {
         //     System.out.print(i + " ");
         // }
-        String str = "6e";
-        String s1 = str.substring(0, 1);
-        String s2 = str.substring(1);
-        System.out.println("Sub1: " + Integer.parseInt(s1, 16) + " Sub2: " + Integer.parseInt(s2, 16));
-        System.out.println(Integer.toHexString(0xCA));
-        System.out.println(0xCA);
+
+        // String str = "6e";
+        // String s1 = str.substring(0, 1);
+        // String s2 = str.substring(1);
+        // System.out.println("Sub1: " + Integer.parseInt(s1, 16) + " Sub2: " + Integer.parseInt(s2, 16));
+        // System.out.println(Integer.toHexString(0xCA));
+        // System.out.println(0xCA);
+
+        // int a = 0x02;
+        // int b = Integer.parseInt("63", 16);
+        // int c = (a*b)%0x11b;
+        // System.out.println(Integer.toHexString(c));
+        String[] m = {"84", "00", "19", "41"};
+        int[] x = {0x02, 0x03, 0x01, 0x01};
+        int sum = 0;
+        for(int i = 0; i < 4; i++){
+            int k = x[i]*Integer.parseInt(m[i], 16);
+                k %= 0x11b;
+            String bi = new BigInteger(Integer.toHexString(k), 16).toString(2);
+            System.out.println("K: " + Integer.toHexString(k) + " bi:" + bi);
+            sum ^= k;
+        }
+        sum %= 0x11b;
+        System.out.println(Integer.toHexString(sum));
+        String bi = new BigInteger(Integer.toHexString(0x03*0x2F), 16).toString(2);
+        System.out.println(bi);
+
+        // String str = " 67 4A ED DE C5 31 FE 18 0D 63 8C 80 C0 F7 70 07";
+        // str = str.replace(" ", ", 0x");
+        // System.out.println("{"+str.substring(2)+"},");
     }
 }

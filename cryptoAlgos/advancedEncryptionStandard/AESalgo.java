@@ -43,6 +43,191 @@ public class AESalgo {
             { 0xA0, 0xE0, 0x3B, 0x4D, 0xAE, 0x2A, 0xF5, 0xB0, 0xC8, 0xEB, 0xBB, 0x3C, 0x83, 0x53, 0x99, 0x61 },
             { 0x17, 0x2B, 0x04, 0x7E, 0xBA, 0x77, 0xD6, 0x26, 0xE1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0C, 0x7D } };
 
+    private static int[][] FIXEDMATRIX1 = { { 0x02, 0x03, 0x01, 0x01 }, { 0x01, 0x02, 0x03, 0x01 },
+            { 0x01, 0x01, 0x02, 0x03 }, { 0x03, 0x01, 0x01, 0x02 } };
+
+    private static int[][] FIXEDMATRIX2 = { { 0x0E, 0x0B, 0x0D, 0x09 }, { 0x09, 0x0E, 0x0B, 0x0D },
+            { 0x0D, 0x09, 0x0E, 0x0B }, { 0x0B, 0x0D, 0x09, 0x0E } };
+    
+    private static int[][] E_TABLE = {
+        {0x01, 0x03, 0x05, 0x0F, 0x11, 0x33, 0x55, 0xFF, 0x1A, 0x2E, 0x72, 0x96, 0xA1, 0xF8, 0x13, 0x35},
+        {0x5F, 0xE1, 0x38, 0x48, 0xD8, 0x73, 0x95, 0xA4, 0xF7, 0x02, 0x06, 0x0A, 0x1E, 0x22, 0x66, 0xAA},    
+        {0xE5, 0x34, 0x5C, 0xE4, 0x37, 0x59, 0xEB, 0x26, 0x6A, 0xBE, 0xD9, 0x70, 0x90, 0xAB, 0xE6, 0x31},
+        {0x53, 0xF5, 0x04, 0x0C, 0x14, 0x3C, 0x44, 0xCC, 0x4F, 0xD1, 0x68, 0xB8, 0xD3, 0x6E, 0xB2, 0xCD},
+        {0x4C, 0xD4, 0x67, 0xA9, 0xE0, 0x3B, 0x4D, 0xD7, 0x62, 0xA6, 0xF1, 0x08, 0x18, 0x28, 0x78, 0x88},            
+        {0x83, 0x9E, 0xB9, 0xD0, 0x6B, 0xBD, 0xDC, 0x7F, 0x81, 0x98, 0xB3, 0xCE, 0x49, 0xDB, 0x76, 0x9A},            
+        {0xB5, 0xC4, 0x57, 0xF9, 0x10, 0x30, 0x50, 0xF0, 0x0B, 0x1D, 0x27, 0x69, 0xBB, 0xD6, 0x61, 0xA3},            
+        {0xFE, 0x19, 0x2B, 0x7D, 0x87, 0x92, 0xAD, 0xEC, 0x2F, 0x71, 0x93, 0xAE, 0xE9, 0x20, 0x60, 0xA0},           
+        {0xFB, 0x16, 0x3A, 0x4E, 0xD2, 0x6D, 0xB7, 0xC2, 0x5D, 0xE7, 0x32, 0x56, 0xFA, 0x15, 0x3F, 0x41},
+        {0xC3, 0x5E, 0xE2, 0x3D, 0x47, 0xC9, 0x40, 0xC0, 0x5B, 0xED, 0x2C, 0x74, 0x9C, 0xBF, 0xDA, 0x75},
+        {0x9F, 0xBA, 0xD5, 0x64, 0xAC, 0xEF, 0x2A, 0x7E, 0x82, 0x9D, 0xBC, 0xDF, 0x7A, 0x8E, 0x89, 0x80},
+        {0x9B, 0xB6, 0xC1, 0x58, 0xE8, 0x23, 0x65, 0xAF, 0xEA, 0x25, 0x6F, 0xB1, 0xC8, 0x43, 0xC5, 0x54},
+        {0xFC, 0x1F, 0x21, 0x63, 0xA5, 0xF4, 0x07, 0x09, 0x1B, 0x2D, 0x77, 0x99, 0xB0, 0xCB, 0x46, 0xCA},
+        {0x45, 0xCF, 0x4A, 0xDE, 0x79, 0x8B, 0x86, 0x91, 0xA8, 0xE3, 0x3E, 0x42, 0xC6, 0x51, 0xF3, 0x0E},
+        {0x12, 0x36, 0x5A, 0xEE, 0x29, 0x7B, 0x8D, 0x8C, 0x8F, 0x8A, 0x85, 0x94, 0xA7, 0xF2, 0x0D, 0x17},
+        {0x39, 0x4B, 0xDD, 0x7C, 0x84, 0x97, 0xA2, 0xFD, 0x1C, 0x24, 0x6C, 0xB4, 0xC7, 0x52, 0xF6, 0x01},
+    };
+    private static int[][] L_TABLE = {
+        {0x00, 0x00, 0x19, 0x01, 0x32, 0x02, 0x1A, 0xC6, 0x4B, 0xC7, 0x1B, 0x68, 0x33, 0xEE, 0xDF, 0x03},
+        {0x64, 0x04, 0xE0, 0x0E, 0x34, 0x8D, 0x81, 0xEF, 0x4C, 0x71, 0x08, 0xC8, 0xF8, 0x69, 0x1C, 0xC1},
+        {0x7D, 0xC2, 0x1D, 0xB5, 0xF9, 0xB9, 0x27, 0x6A, 0x4D, 0xE4, 0xA6, 0x72, 0x9A, 0xC9, 0x09, 0x78},
+        {0x65, 0x2F, 0x8A, 0x05, 0x21, 0x0F, 0xE1, 0x24, 0x12, 0xF0, 0x82, 0x45, 0x35, 0x93, 0xDA, 0x8E},
+        {0x96, 0x8F, 0xDB, 0xBD, 0x36, 0xD0, 0xCE, 0x94, 0x13, 0x5C, 0xD2, 0xF1, 0x40, 0x46, 0x83, 0x38},
+        {0x66, 0xDD, 0xFD, 0x30, 0xBF, 0x06, 0x8B, 0x62, 0xB3, 0x25, 0xE2, 0x98, 0x22, 0x88, 0x91, 0x10},
+        {0x7E, 0x6E, 0x48, 0xC3, 0xA3, 0xB6, 0x1E, 0x42, 0x3A, 0x6B, 0x28, 0x54, 0xFA, 0x85, 0x3D, 0xBA},
+        {0x2B, 0x79, 0x0A, 0x15, 0x9B, 0x9F, 0x5E, 0xCA, 0x4E, 0xD4, 0xAC, 0xE5, 0xF3, 0x73, 0xA7, 0x57},
+        {0xAF, 0x58, 0xA8, 0x50, 0xF4, 0xEA, 0xD6, 0x74, 0x4F, 0xAE, 0xE9, 0xD5, 0xE7, 0xE6, 0xAD, 0xE8},
+        {0x2C, 0xD7, 0x75, 0x7A, 0xEB, 0x16, 0x0B, 0xF5, 0x59, 0xCB, 0x5F, 0xB0, 0x9C, 0xA9, 0x51, 0xA0},
+        {0x7F, 0x0C, 0xF6, 0x6F, 0x17, 0xC4, 0x49, 0xEC, 0xD8, 0x43, 0x1F, 0x2D, 0xA4, 0x76, 0x7B, 0xB7},
+        {0xCC, 0xBB, 0x3E, 0x5A, 0xFB, 0x60, 0xB1, 0x86, 0x3B, 0x52, 0xA1, 0x6C, 0xAA, 0x55, 0x29, 0x9D},
+        {0x97, 0xB2, 0x87, 0x90, 0x61, 0xBE, 0xDC, 0xFC, 0xBC, 0x95, 0xCF, 0xCD, 0x37, 0x3F, 0x5B, 0xD1},
+        {0x53, 0x39, 0x84, 0x3C, 0x41, 0xA2, 0x6D, 0x47, 0x14, 0x2A, 0x9E, 0x5D, 0x56, 0xF2, 0xD3, 0xAB},
+        {0x44, 0x11, 0x92, 0xD9, 0x23, 0x20, 0x2E, 0x89, 0xB4, 0x7C, 0xB8, 0x26, 0x77, 0x99, 0xE3, 0xA5},
+        {0x67, 0x4A, 0xED, 0xDE, 0xC5, 0x31, 0xFE, 0x18, 0x0D, 0x63, 0x8C, 0x80, 0xC0, 0xF7, 0x70, 0x07},
+    };
+
+    // Mix columns operation
+    private static String[][] matrixMul(String[][] MSG, int[][] FIXED) {
+        int[][] storage = new int[MSG.length][MSG[0].length];
+
+        for (int i = 0; i < storage.length; i++) {
+            for (int j = 0; j < storage[0].length; j++) {
+                for (int k = 0; k < MSG[0].length; k++) {
+                    // int msg = Integer.parseInt(MSG[k][j], 16);
+                    // storage[i][j] ^= ((FIXEDMATRIX[i][k] * msg) % 0x11b);
+                    if(FIXED[i][k] != 0x01){
+                        if((Integer.parseInt(MSG[k][j].substring(0, 1), 16)== 0) && (Integer.parseInt(MSG[k][j].substring(1), 16) == 0)) continue;
+                        String fstr = "0" + Integer.toHexString(FIXED[i][k]);//Converting FixedMatrix element to string for later finding the index in L-Table
+                        //System.out.println("Fixed Matrix String: " + fstr);
+                        //Finding the result => L-Table
+                        int rslt = L_TABLE[Integer.parseInt(fstr.substring(0, 1), 16)][Integer.parseInt(fstr.substring(1), 16)]//Index for FixedMatrix in L
+                                                                      +
+                                     L_TABLE[Integer.parseInt(MSG[k][j].substring(0, 1), 16)][Integer.parseInt(MSG[k][j].substring(1), 16)];//Index for MessageMatrix in L
+                        //if result greater than FF then decrease using FF(Like mod)
+                        if(rslt > 0xFF){
+                            rslt -= 0xFF;
+                        }
+
+                        String rsltStr = Integer.toHexString(rslt);
+                        if(rsltStr.length() != 2){
+                            rsltStr = "0" + rsltStr;
+                        }
+                        //System.out.println("Result String after L table: " + rsltStr);
+                        //Skip E_TABLE[0][0]
+                        // if(Integer.parseInt(rsltStr.substring(0, 1), 16) == 0 && Integer.parseInt(rsltStr.substring(1), 16) == 0){
+                        //     continue;
+                        // }
+                        storage[i][j] ^= E_TABLE[Integer.parseInt(rsltStr.substring(0, 1), 16)][Integer.parseInt(rsltStr.substring(1), 16)];//Finding the resultant index using E-Table
+                        continue;
+                    }
+                    storage[i][j] ^= Integer.parseInt(MSG[k][j], 16);//if FixedMatrix element is 0x01
+                }
+                // storage[i][j] = storage[i][j] % 0x11b;
+                // storage[i][j] = Integer.toHexString(storage[i][j]);
+            }
+        }
+
+        String[][] msgMat = new String[MSG.length][MSG[0].length];
+        for (int i = 0; i < msgMat.length; i++) {
+            for (int j = 0; j < msgMat.length; j++) {
+                msgMat[i][j] = Integer.toHexString(storage[i][j]);
+                if (msgMat[i][j].length() != 2) {
+                    msgMat[i][j] = "0" + msgMat[i][j];
+                }
+                System.out.print(msgMat[i][j] + " ");
+            }
+            System.out.println();
+        }
+        return msgMat;
+    }
+
+    private static String rowShifter(String str, int i) {
+        return str.substring(i, str.length()) + str.substring(0, i);
+    }
+
+    private static String encoder(String[][] MSG, int count, String option) {
+
+        if (((count > 9) && (option == "ENCODE")) || (count == 0) && (option == "DECODE")) {
+            String cipher = "";
+            for (int i = 0; i < MSG.length; i++) {
+                for (int j = 0; j < MSG.length; j++) {
+                    cipher += MSG[j][i];
+                }
+            }
+            return cipher;
+        }
+        // Byte substitution
+        System.out.println("\nSubstitution matrix at round: " + (count + 1));
+        for (int i = 0; i < MSG.length; i++) {
+            for (int j = 0; j < MSG.length; j++) {
+                int row = Integer.parseInt(MSG[i][j].substring(0, 1), 16);
+
+                int col = Integer.parseInt(MSG[i][j].substring(1), 16);
+
+                
+                MSG[i][j] = Integer.toHexString((option == "ENCODE") ? SBOX[row][col] : INV_SBOX[row][col]);
+                if (MSG[i][j].length() != 2) {
+                    MSG[i][j] = "0" + MSG[i][j];
+                }
+                System.out.print(MSG[i][j] + " ");
+            }
+            System.out.println();
+        }
+
+        // Shift rows
+        System.out.println("\nShifted row matrix at round: " + (count + 1));
+        for (int i = 1; i < MSG.length; i++) {
+            String str = "";
+            for (int j = 0; j < MSG.length; j++) {
+                str += MSG[i][j];
+            }
+            System.out.printf("\nBefore shifting rows at round: %d - %s\n", (count + 1), str);
+
+            str = (option == "ENCODE") ? rowShifter(str, i * 2) : rowShifter(str, str.length() - (i * 2));
+            System.out.printf("\nAfter shifting rows at round: %d - %s\n", (count + 1), str);
+
+            short start = 0, end = 2;
+            for (int j = 0; j < MSG.length; j++) {
+                MSG[i][j] = str.substring(start, end);
+                System.out.print(MSG[i][j] + " ");
+                start = end;
+                end += 2;
+            }
+            System.out.println();
+        }
+
+        // Mix columns
+        if ((count != 9) && (option == "ENCODE") || ((count != 1) && (option == "DECODE"))) {
+        System.out.println("\nMix column matrix at round: " + (count + 1));
+        if(option == "DECODE"){
+            MSG = matrixMul(MSG, FIXEDMATRIX2);
+        }else{
+            MSG = matrixMul(MSG, FIXEDMATRIX1);
+        }
+    }
+        // Add round key
+        
+            System.out.println("\nCipher matrix at round: " + (count + 1));
+            for (int i = 0; i < MSG.length; i++) {
+                for (int j = 0; j < MSG.length; j++) {
+                    MSG[i][j] = Integer.toHexString(
+                            
+                            Integer.parseInt(MSG[i][j], 16) ^ Integer.parseInt(KEYGEN[(option == "ENCODE") ? (count+1) : (count-1)][i][j], 16));
+                    if (MSG[i][j].length() != 2) {
+                        MSG[i][j] = "0" + MSG[i][j];
+                    }
+                    System.out.print(MSG[i][j] + " ");
+                }
+                System.out.println();
+            }
+        if(option == "ENCODE"){
+            return encoder(MSG, ++count, "ENCODE");
+        }else{
+            return encoder(MSG, --count, "DECODE");
+        }
+        
+    }
+
     private static String keyGenerator(String[][][] KEYGEN, int count) {
         if (count > 9) {
             return "Gotcha";
@@ -101,7 +286,7 @@ public class AESalgo {
         return keyGenerator(KEYGEN, ++count);
     }
 
-    private static String[][] firstMat(String keyHex, String option) {
+    private static String[][] firstMat(String keyHex, String option, String typ) {
         String[][] arr = new String[4][4];
         short start = 0, end = 2;
         for (int i = 0; i < 4; i++) {
@@ -128,8 +313,8 @@ public class AESalgo {
             System.out.println("\nRound 0 Matrix: ");
             for (int i = 0; i < 4; i++) {
                 for (int j = 0; j < 4; j++) {
-                    arr[i][j] = Integer
-                            .toHexString(Integer.parseInt(KEYGEN[0][i][j], 16) ^ Integer.parseInt(arr[i][j], 16));
+                    int in = typ == "EN" ? 0 : 10;
+                    arr[i][j] = Integer.toHexString(Integer.parseInt(KEYGEN[in][i][j], 16) ^ Integer.parseInt(arr[i][j], 16));
                     if (arr[i][j].length() != 2) {
                         arr[i][j] = "0" + arr[i][j];
                     }
@@ -157,13 +342,13 @@ public class AESalgo {
     // return Bi;
     // }
     public static void main(String[] args) throws UnsupportedEncodingException {
-        String keyHex = toHex("Thats my Kung Fu");// satishcjisboring
+        String keyHex = toHex("Thats my Kung Fu");// satishcjisboring, Thats my Kung Fu
         System.out.println("Hex key: " + keyHex);// 736174697368636a6973626f72696e67
 
         // String keyBin = toBin(keyHex, 16);
         // System.out.println(keyBin);
 
-        firstMat(keyHex, "KEY");
+        firstMat(keyHex, "KEY", "KEY");
 
         // for(int i = 0; i < SBOX.length; i++){
         // for(int j = 0; j < SBOX.length; j++){
@@ -185,8 +370,26 @@ public class AESalgo {
         }
 
         String msg = toHex("Two One Nine Two");
-        System.out.println("Hex msg: " + msg);
+        System.out.println("Hex msg: " + msg);//54776f204f6e65204e696e652054776f
 
-        firstMat(msg, "MESSAGE");
+        String[][] MSG = firstMat(msg, "MESSAGE", "EN");
+        String cipher = encoder(MSG, 0, "ENCODE");
+        System.out.println("Encrypted: " + cipher);
+
+        String[][] CIPHER = firstMat(cipher, "MESSAGE", "DE");
+        String decoded = encoder(CIPHER, 10, "DECODE");
+        System.out.println(decoded);
+        decoded = hexToAscii(decoded);
+        System.out.println("\n******Decoded Hex: " + decoded + " ******");
+    }
+    private static String hexToAscii(String hexStr) {
+        StringBuilder output = new StringBuilder("");
+        
+        for (int i = 0; i < hexStr.length(); i += 2) {
+            String str = hexStr.substring(i, i + 2);
+            output.append((char) Integer.parseInt(str, 16));
+        }
+        
+        return output.toString();
     }
 }
