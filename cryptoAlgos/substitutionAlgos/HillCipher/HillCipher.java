@@ -22,7 +22,7 @@ public class HillCipher {
             boolean validK = false;
             String key = "";
             do {
-                System.out.print("Please enter a valid Key: ");
+                System.out.print("Please enter a valid Key: "); // RRFVSVCCT, BEAHLCAFB, GYBNQKURP, mmnteeizetgztohz = 0, ***ehcdbdbccfdebecd*** , CHGEFNCGB
                 key = br.readLine();
                 validK = validKey(key.toUpperCase(), HillCipherEncode::checkVaildKey);
             } while (validK);
